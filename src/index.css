@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-gray-50 text-gray-900;
+    font-family: 'Poppins', sans-serif;
+  }
+}
+
+@layer utilities {
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+  .glass-dark {
+    @apply bg-black/20 backdrop-blur-lg border border-white/10;
+  }
+  .text-shadow-glow {
+    text-shadow: 0 0 20px rgba(242, 147, 37, 0.4);
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .chip-active {
+    @apply bg-primary-600 text-white shadow-[0_0_20px_rgba(242,147,37,0.4)] border-primary-400;
+  }
+  .chip-inactive {
+    @apply bg-white text-gray-600 border border-gray-100 hover:border-primary-200 hover:bg-gray-50;
+  }
+}
+
