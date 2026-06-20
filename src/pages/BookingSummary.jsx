@@ -22,6 +22,7 @@ const BookingSummary = () => {
   const [isLoadingAuth, setIsLoadingAuth] = useState(false)
   const [bookingCount, setBookingCount] = useState(0)
   const [isApplyingDiscount, setIsApplyingDiscount] = useState(false)
+  const [showQRModal, setShowQRModal] = useState(false)
 
   useEffect(() => {
     const details = localStorage.getItem('bookingDetails')
@@ -118,11 +119,10 @@ const BookingSummary = () => {
   }
 
   const handlePayment = async (currentUser, currentCount = null) => {
-    const payingUser = currentUser || user
-    const effectiveCount = currentCount !== null ? currentCount : bookingCount
-    const isDiscounted = effectiveCount >= 5
-    const finalPrice = isDiscounted ? basePrice * 0.7 : basePrice
+    setShowQRModal(true)
+  }
 
+  const confirmBooking = async () => {
     setProcessingPayment(true)
     setPaymentError('')
 
@@ -137,16 +137,16 @@ const BookingSummary = () => {
 
       const bookingData = {
         bike_id: bike.id,
-        customer_id: payingUser?.id,
-        customer_name: `${payingUser?.first_name} ${payingUser?.last_name}` || 'Guest',
-        customer_email: payingUser?.email,
-        customer_phone: payingUser?.phone,
+        customer_id: user?.id,
+        customer_name: `${user?.first_name} ${user?.last_name}` || 'Guest',
+        customer_email: user?.email,
+        customer_phone: user?.phone,
         pickup_date: formatDateForBackend(isNewFormat ? pickupDate : date),
         pickup_time: isNewFormat ? pickupTime : (time || '10:00'),
         drop_date: formatDateForBackend(isNewFormat ? dropDate : date),
         drop_time: isNewFormat ? dropTime : (time || '10:00'),
         location: location || 'Not specified',
-        total_price: finalPrice
+        total_price: totalPrice
       }
 
       // Bypass Razorpay completely - direct booking creation
@@ -155,18 +155,20 @@ const BookingSummary = () => {
       clearCart()
       localStorage.removeItem('bookingDetails')
 
-      alert('Booking successful! Please pay when you collect the bike.')
+      alert('Booking confirmed! Our team will contact you shortly.')
       navigate('/booking-success', {
         state: {
           bookingId: response.id,
-          paymentId: "PAY_ON_ARRIVAL",
-          isMilestone: effectiveCount === 5
+          paymentId: "MANUAL_UPI",
+          isMilestone: bookingCount >= 5
         }
       })
     } catch (error) {
       console.error('Booking error:', error)
       setPaymentError(error.message || 'Failed to complete booking. Please try again.')
+    } finally {
       setProcessingPayment(false)
+      setShowQRModal(false)
     }
   }
 
@@ -295,7 +297,7 @@ const BookingSummary = () => {
                 <div className="flex-1">
                   <p className="text-sm text-gray-500">Fulfillment Method</p>
                   <p className="font-bold text-gray-900 text-lg">
-                    {fulfillmentType === 'delivery' ? 'Home Delivery' : 'In-Shop Pickup'}
+                    {fulfillmentType === 'delivery' ? 'Delivery on stay' : 'In-Shop Pickup'}
                   </p>
                   <p className="text-sm text-gray-600 mt-1 leading-relaxed">
                     {location}
@@ -419,6 +421,49 @@ const BookingSummary = () => {
         onClose={() => setShowAuthModal(false)}
         onSuccess={handleAuthSuccess}
       />
+
+      {/* QR Code Modal */}
+      <AnimatePresence>
+        {showQRModal && (
+          <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl"
+            >
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Pay via UPI</h3>
+              <p className="text-gray-500 text-sm mb-6">Scan the QR code below using any UPI app to pay ₹{Math.round(totalPrice)}</p>
+              
+              <div className="bg-gray-50 rounded-2xl p-4 mb-6 inline-block border-2 border-gray-100">
+                <img 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=${import.meta.env.VITE_UPI_ID || 'test@upi'}&pn=RetroBikeRent&am=${Math.round(totalPrice)}&cu=INR`}
+                  alt="UPI QR Code" 
+                  className="w-48 h-48"
+                />
+              </div>
+
+              <div className="space-y-3">
+                <button
+                  onClick={confirmBooking}
+                  disabled={processingPayment}
+                  className="w-full bg-primary-600 text-white font-bold py-3.5 rounded-xl hover:bg-primary-700 transition-colors flex items-center justify-center gap-2"
+                >
+                  {processingPayment ? <Loader className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
+                  I have paid ₹{Math.round(totalPrice)}
+                </button>
+                <button
+                  onClick={() => setShowQRModal(false)}
+                  disabled={processingPayment}
+                  className="w-full bg-gray-100 text-gray-700 font-bold py-3.5 rounded-xl hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
