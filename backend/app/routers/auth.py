@@ -164,8 +164,8 @@ def verify_otp(request: OTPVerifyRequest, response: Response, db: Session = Depe
         httponly=True,
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         expires=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-        samesite="lax",
-        secure=False # Set to True in Prod with HSV
+        samesite="none",
+        secure=True
     )
     
     return {
@@ -228,8 +228,8 @@ def admin_login(request: AdminLoginRequest, response: Response):
             httponly=True,
             max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
             expires=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-            samesite="lax",
-            secure=False # Set to True in Prod with HTTPS
+            samesite="none",
+            secure=True
         )
         return {"message": "Admin login successful", "role": "admin"}
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")

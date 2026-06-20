@@ -12,7 +12,7 @@ const CartDrawer = () => {
   const [fulfillmentType, setFulfillmentType] = useState(null)
   const [deliveryAddress, setDeliveryAddress] = useState('')
   const [copied, setCopied] = useState(false)
-  
+
   const shopAddress = "7, Thennanjalai Rd, opposite to Passport Office, Subaiya Nagar, Orleanpet, Puducherry, 605001"
 
   const handleContinueBooking = () => {
@@ -285,21 +285,21 @@ const CartDrawer = () => {
       {/* Fulfillment Modal Overflowing outside Drawer */}
       <AnimatePresence>
         {showFulfillmentModal && (
-          <motion.div 
+          <motion.div
             key="fulfillment-backdrop"
             className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <motion.div 
+            <motion.div
               key="fulfillment-modal"
               className="bg-white rounded-[32px] w-full max-w-xl overflow-hidden shadow-2xl relative"
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
             >
-              <button 
+              <button
                 onClick={() => setShowFulfillmentModal(false)}
                 className="absolute top-6 right-6 p-2 hover:bg-gray-100 rounded-full transition-colors z-10"
               >
@@ -314,18 +314,16 @@ const CartDrawer = () => {
 
                 <div className="grid gap-4 mb-8">
                   {/* Pickup Option */}
-                  <button 
+                  <button
                     onClick={() => setFulfillmentType('pickup')}
-                    className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all text-left relative group ${
-                      fulfillmentType === 'pickup' 
-                        ? 'border-primary-500 bg-primary-50/30' 
+                    className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all text-left relative group ${fulfillmentType === 'pickup'
+                        ? 'border-primary-500 bg-primary-50/30'
                         : 'border-gray-100 hover:border-primary-200 bg-gray-50/50'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-start gap-4">
-                      <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center transition-colors ${
-                        fulfillmentType === 'pickup' ? 'bg-primary-600 text-white' : 'bg-white text-gray-400 border border-gray-100'
-                      }`}>
+                      <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center transition-colors ${fulfillmentType === 'pickup' ? 'bg-primary-600 text-white' : 'bg-white text-gray-400 border border-gray-100'
+                        }`}>
                         <MapPin className="w-6 h-6 sm:w-7 sm:h-7" />
                       </div>
                       <div className="flex-1 pr-8">
@@ -345,22 +343,20 @@ const CartDrawer = () => {
                   </button>
 
                   {/* Delivery Option */}
-                  <button 
+                  <button
                     onClick={() => setFulfillmentType('delivery')}
-                    className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all text-left relative group ${
-                      fulfillmentType === 'delivery' 
-                        ? 'border-green-500 bg-green-50/30' 
+                    className={`p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all text-left relative group ${fulfillmentType === 'delivery'
+                        ? 'border-green-500 bg-green-50/30'
                         : 'border-gray-100 hover:border-green-200 bg-gray-50/50'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-start gap-4">
-                      <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center transition-colors ${
-                        fulfillmentType === 'delivery' ? 'bg-green-600 text-white' : 'bg-white text-gray-400 border border-gray-100'
-                      }`}>
+                      <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center transition-colors ${fulfillmentType === 'delivery' ? 'bg-green-600 text-white' : 'bg-white text-gray-400 border border-gray-100'
+                        }`}>
                         <Truck className="w-6 h-6 sm:w-7 sm:h-7" />
                       </div>
                       <div className="flex-1 pr-8">
-                        <h4 className="font-black text-gray-900 text-base sm:text-lg mb-1 italic">Home Delivery</h4>
+                        <h4 className="font-black text-gray-900 text-base sm:text-lg mb-1 italic">Delivery on stay</h4>
                         <p className="text-xs sm:text-sm text-gray-500 font-medium leading-relaxed">
                           We bring the ride to your doorstep.
                         </p>
@@ -379,7 +375,7 @@ const CartDrawer = () => {
                 {/* Dynamic Content */}
                 <AnimatePresence mode="wait">
                   {fulfillmentType === 'pickup' && (
-                    <motion.div 
+                    <motion.div
                       key="pickup-info"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -395,16 +391,16 @@ const CartDrawer = () => {
                           {shopAddress}
                         </p>
                         <div className="flex gap-3">
-                          <button 
+                          <button
                             onClick={handleCopyAddress}
                             className="flex-1 py-3 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border border-white/10"
                           >
                             {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
                             {copied ? 'Copied!' : 'Copy Address'}
                           </button>
-                          <a 
-                            href="https://maps.app.goo.gl/gDMbH5ui4UtXfjye6" 
-                            target="_blank" 
+                          <a
+                            href="https://maps.app.goo.gl/gDMbH5ui4UtXfjye6"
+                            target="_blank"
                             rel="noopener noreferrer"
                             className="flex-1 py-3 bg-primary-600 hover:bg-primary-500 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-[0_10px_20px_-5px_rgba(242,147,37,0.3)]"
                           >
@@ -417,7 +413,7 @@ const CartDrawer = () => {
                   )}
 
                   {fulfillmentType === 'delivery' && (
-                    <motion.div 
+                    <motion.div
                       key="delivery-info"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -432,9 +428,9 @@ const CartDrawer = () => {
                         <p className="text-sm font-bold leading-relaxed mb-4">
                           Enter your address so we can bring the bike to you!
                         </p>
-                        
+
                         <div className="mb-2">
-                          <textarea 
+                          <textarea
                             placeholder="Flat/House No, Apartment, Landmark..."
                             value={deliveryAddress}
                             onChange={(e) => setDeliveryAddress(e.target.value)}
@@ -446,14 +442,13 @@ const CartDrawer = () => {
                   )}
                 </AnimatePresence>
 
-                <button 
+                <button
                   disabled={!fulfillmentType || (fulfillmentType === 'delivery' && !deliveryAddress)}
                   onClick={handleFinalizeBooking}
-                  className={`w-full py-5 rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 ${
-                    fulfillmentType && !(fulfillmentType === 'delivery' && !deliveryAddress)
-                      ? (fulfillmentType === 'delivery' ? 'bg-green-600' : 'bg-gray-900') + ' text-white shadow-xl hover:translate-y-[-2px]' 
+                  className={`w-full py-5 rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-3 ${fulfillmentType && !(fulfillmentType === 'delivery' && !deliveryAddress)
+                      ? (fulfillmentType === 'delivery' ? 'bg-green-600' : 'bg-gray-900') + ' text-white shadow-xl hover:translate-y-[-2px]'
                       : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  }`}
+                    }`}
                 >
                   Confirm & Proceed
                   <ArrowLeft className="w-5 h-5 rotate-180" />

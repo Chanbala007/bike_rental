@@ -123,31 +123,11 @@ const BookingSummary = () => {
     const isDiscounted = effectiveCount >= 5
     const finalPrice = isDiscounted ? basePrice * 0.7 : basePrice
 
-    if (!window.Razorpay) {
-      setPaymentError('Payment gateway is loading. Please wait a moment and try again.')
-      return
-    }
-
     setProcessingPayment(true)
     setPaymentError('')
 
     try {
-      // Step 1: Create order on backend
-      const orderResponse = await paymentAPI.createOrder({
-        amount: finalPrice,
-        currency: 'INR',
-        receipt: `booking_${bike.id}_${Date.now()}`
-      })
-
-      const { order_id, key_id } = orderResponse
-
-      if (!order_id || !key_id) {
-        throw new Error('Invalid response from payment server')
-      }
-
-      console.log("Initializing Razorpay with:", { order_id, key_id, amount: orderResponse.amount })
-
-      // Step 2: Prepare booking data
+      // Prepare booking data
       const formatDateForBackend = (dateStr) => {
         if (!dateStr) return null
         if (dateStr.includes('T')) return dateStr
@@ -169,70 +149,23 @@ const BookingSummary = () => {
         total_price: finalPrice
       }
 
-      // Step 3: Open Razorpay checkout
-      const options = {
-        key: key_id,
-        amount: orderResponse.amount,
-        currency: orderResponse.currency,
-        name: 'Bike Rental',
-        description: `Booking for ${bike.name}`,
-        order_id: order_id,
-        handler: async function (response) {
-          console.log("Razorpay Success Response:", response);
-          try {
-            const verificationResponse = await paymentAPI.verifyPayment({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              booking_data: bookingData
-            })
+      // Bypass Razorpay completely - direct booking creation
+      const response = await bookingAPI.create(bookingData)
 
-            clearCart()
-            localStorage.removeItem('bookingDetails')
+      clearCart()
+      localStorage.removeItem('bookingDetails')
 
-            alert('Payment successful! Booking confirmed.')
-            navigate('/booking-success', {
-              state: {
-                bookingId: verificationResponse.booking_id,
-                paymentId: response.razorpay_payment_id,
-                isMilestone: effectiveCount === 5
-              }
-            })
-          } catch (error) {
-            console.error('Payment verification error:', error)
-            setPaymentError(error.message || 'Payment verification failed. Please contact support.')
-            setProcessingPayment(false)
-          }
-        },
-        prefill: {
-          name: `${payingUser?.first_name} ${payingUser?.last_name}` || '',
-          email: payingUser?.email || '',
-          contact: payingUser?.phone || ''
-        },
-        theme: { color: '#f29325' },
-        modal: {
-          ondismiss: function () {
-            console.log("Razorpay modal dismissed");
-            setProcessingPayment(false)
-          }
+      alert('Booking successful! Please pay when you collect the bike.')
+      navigate('/booking-success', {
+        state: {
+          bookingId: response.id,
+          paymentId: "PAY_ON_ARRIVAL",
+          isMilestone: effectiveCount === 5
         }
-      }
-
-      console.log("Opening Razorpay with options:", {
-        ...options,
-        key: options.key ? "****" + options.key.slice(-4) : "MISSING"
-      });
-
-      const razorpay = new window.Razorpay(options)
-      razorpay.on('payment.failed', function (response) {
-        setPaymentError(`Payment failed: ${response.error.description || 'Unknown error'}`)
-        setProcessingPayment(false)
       })
-
-      razorpay.open()
     } catch (error) {
-      console.error('Payment error:', error)
-      setPaymentError(error.message || 'Failed to initiate payment. Please try again.')
+      console.error('Booking error:', error)
+      setPaymentError(error.message || 'Failed to complete booking. Please try again.')
       setProcessingPayment(false)
     }
   }

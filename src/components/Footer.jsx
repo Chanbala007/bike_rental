@@ -11,7 +11,7 @@ const Footer = () => {
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mb-12">
         <div>
           <div className="flex items-center gap-3 mb-6">
-            <img src={logoImage} alt="Retro Bike Rent" className="w-12 h-12 object-contain rounded-md" />
+            <img src={logoImage} alt="Retro Bike Rent" className="w-12 h-12 object-contain bg-white p-1 rounded-md" />
             <span className="text-2xl font-black tracking-tight">Retro Bike Rent</span>
           </div>
           <p className="text-gray-400 text-sm leading-relaxed mb-6 max-w-sm">
