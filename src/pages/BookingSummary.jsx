@@ -155,7 +155,6 @@ const BookingSummary = () => {
       clearCart()
       localStorage.removeItem('bookingDetails')
 
-      alert('Booking confirmed! Our team will contact you shortly.')
       navigate('/booking-success', {
         state: {
           bookingId: response.id,
