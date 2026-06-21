@@ -436,7 +436,7 @@ const BookingSummary = () => {
               
               <div className="bg-gray-50 rounded-2xl p-4 mb-6 inline-block border-2 border-gray-100">
                 <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=${import.meta.env.VITE_UPI_ID || 'test@upi'}&pn=RetroBikeRent&am=${Math.round(totalPrice)}&cu=INR`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(`upi://pay?pa=${import.meta.env.VITE_UPI_ID || 'test@upi'}&pn=RetroBikeRent&am=${Math.round(totalPrice)}&cu=INR`)}`}
                   alt="UPI QR Code" 
                   className="w-48 h-48"
                 />
