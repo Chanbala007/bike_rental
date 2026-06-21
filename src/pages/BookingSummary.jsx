@@ -171,6 +171,8 @@ const BookingSummary = () => {
     }
   }
 
+  const upiString = `upi://pay?pa=${import.meta.env.VITE_UPI_ID || 'test@upi'}&pn=RetroBikeRent&am=${Math.round(totalPrice)}&cu=INR&tn=BikeRental-${user?.phone || 'Guest'}`
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header with Logo */}
@@ -434,12 +436,26 @@ const BookingSummary = () => {
               <h3 className="text-xl font-bold text-gray-900 mb-2">Pay via UPI</h3>
               <p className="text-gray-500 text-sm mb-6">Scan the QR code below using any UPI app to pay ₹{Math.round(totalPrice)}</p>
               
-              <div className="bg-gray-50 rounded-2xl p-4 mb-6 inline-block border-2 border-gray-100">
+              <div className="bg-gray-50 rounded-2xl p-4 mb-4 inline-block border-2 border-gray-100">
                 <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(`upi://pay?pa=${import.meta.env.VITE_UPI_ID || 'test@upi'}&pn=RetroBikeRent&am=${Math.round(totalPrice)}&cu=INR&tn=BikeRental-${user?.phone || 'Guest'}`)}`}
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiString)}`}
                   alt="UPI QR Code" 
                   className="w-48 h-48"
                 />
+              </div>
+
+              {/* Mobile Pay Button */}
+              <div className="mb-6">
+                <a 
+                  href={upiString}
+                  className="w-full bg-[#1A73E8] text-white font-bold py-3 px-4 rounded-xl hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.52-2.14 1.52-1.46 0-2.25-.67-2.36-1.66H8.03c.13 1.8 1.4 2.8 2.87 3.12V19h2.34v-1.6c1.64-.32 2.89-1.4 2.89-3.03-.01-1.79-1.4-2.57-3.82-3.23z"/>
+                  </svg>
+                  Pay with UPI App
+                </a>
+                <p className="text-[11px] text-gray-500 mt-2 leading-relaxed">If you are on your phone, tap the button above to open GPay, PhonePe, or Paytm instantly.</p>
               </div>
 
               <div className="space-y-3">
