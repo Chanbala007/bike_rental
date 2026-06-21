@@ -954,9 +954,16 @@ const Bookings = () => {
                           className="hover:bg-gray-50 transition-colors"
                         >
                           <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            #{booking.id}
-                            {booking.bookingSource === 'walk_in' && (
-                              <span className="ml-2 text-[10px] bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-full font-semibold">In-Shop</span>
+                            <div className="flex items-center">
+                              <span>#{booking.id}</span>
+                              {booking.bookingSource === 'walk_in' && (
+                                <span className="ml-2 text-[10px] bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-full font-semibold">In-Shop</span>
+                              )}
+                            </div>
+                            {booking.createdAt && (
+                              <div className="text-[10px] text-gray-400 mt-1 font-normal">
+                                {new Date(booking.createdAt).toLocaleDateString()} {new Date(booking.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </div>
                             )}
                           </td>
                           <td className="px-4 py-4 whitespace-nowrap">
@@ -1052,6 +1059,11 @@ const Bookings = () => {
                               <span className="text-[10px] bg-amber-100 text-amber-700 border border-amber-200 px-1.5 py-0.5 rounded-full font-semibold">In-Shop</span>
                             )}
                           </div>
+                          {booking.createdAt && (
+                            <p className="text-[10px] text-gray-400 font-medium my-0.5">
+                              Booked: {new Date(booking.createdAt).toLocaleDateString()} {new Date(booking.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </p>
+                          )}
                           <p className="text-sm text-gray-500">{bikes[booking.bikeId] || `Bike #${booking.bikeId}`}</p>
                         </div>
                         <div className="flex flex-col items-end gap-1">
